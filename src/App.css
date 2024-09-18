@@ -1,38 +1,184 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.react-form-builder>div>div:first-child {
+  float: right !important;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  justify-content: space-between;
 }
 
-.App-link {
-  color: #61dafb;
+.react-form-builder>div>div:last-child {
+  float: left !important;
+  width: 20%;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.react-form-builder .react-form-builder-preview .edit-form {
+  position: relative;
+  order: 2;
+  width: 35%;
+  transition: none;
+  left: auto;
 }
+
+.react-form-builder .react-form-builder-preview .Sortable {
+  width: 60%;
+}
+
+ 
+
+.App {
+  margin: auto;
+  max-width: 1600px;
+}
+
+body {
+  width: 100%;
+}
+
+.app-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.form-elements-list {
+  width: 200px;
+  margin-right: 20px;
+}
+
+.grid-container {
+  flex-grow: 1;
+}
+
+.grid-stack-item-content {
+
+  position: relative;
+}
+
+.grid-stack-item-content .right-top {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+}
+
+
+.grid-stack {
+  /* min-height: 500px; */
+}
+
+.left-menu {
+  width: 300px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  background-color: #8b8b8b;
+  color: #fff;
+}
+
+.textField .full-width,
+.textarea .full-width {
+  width: 100%;
+  display: block;
+}
+
+.textarea .full-width {
+  height: 23px;
+}
+
+.element-TextField {
+  background-image: url('./img/textfield.png');
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 30px;
+  padding-left: 30px;
+}
+
+.element-TextArea {
+  background-image: url('./img/textarea.png');
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 30px;
+  padding-left: 30px;
+}
+
+.main-grid {
+  display: flex;
+  max-width: 95%;
+  margin: auto;
+}
+
+.app-drop-box {
+  width: calc(100% - 320px);
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+
+.app-drop-box>div {
+  width: 100%;
+}
+
+/* .grid-stack-item{border: 1px solid #aaa;} */
+
+
+.grid-stack {
+  width: 100%;
+  min-height: 100%;
+  background-color: #f0f0f0; /* Add background for visibility */
+}
+
+ 
+.app-drop-box > .grid-stack {
+  /* min-height: 500px; */
+}
+
+.grid-stack-item-content {
+  background-color: #f0f0f0;
+  border: 1px solid #ddd;
+  padding: 10px;
+}
+
+
+.multi-grid-container {
+  display: flex;
+}
+
+.grid {
+   
+}
+.action-btn *{position: relative !important;}
+.drag-header{
+  cursor: all-scroll;
+}
+.drag-header::before{
+  content: "\2636";
+  margin-right: 10px;
+}
+
+.tabel-grid{
+  height: 300px !important;
+}
+.app-elements{
+  height: 100%;
+}
+
+.required{
+  color: #f00;
+}
+.edit-app{padding: 10px; width: 340px;}
+
+.app-edit-element{
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+
+.input-property{
+  margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+}
+.input-property.input-grouped{flex-direction: row;}
+.input-property label{margin-right: 10px; text-transform: capitalize;}
+
+.app-form > .grid-stack {
+  min-height: 600px;
+  
+}
+.app-form {width: 100%;}
+
+.app-form-div{display: flex;}
