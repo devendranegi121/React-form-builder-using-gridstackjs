@@ -2,11 +2,11 @@ import React from "react";
 
 const TextField = (props) => {
   const { element, onElementClick, widgetsMap} = props
-  const {id, label, disabled , properties}= element;
-  console.log('element', element)
+  const {id,  disabled , properties}= element;
   const {required=false,
     placeholder= "",
     value="",
+    label="Input",
     showLabel= true} = properties;
  
  

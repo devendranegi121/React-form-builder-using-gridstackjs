@@ -142,9 +142,8 @@ body {
    
 }
 .action-btn *{position: relative !important;}
-.drag-header{
-  cursor: all-scroll;
-}
+
+
 .drag-header::before{
   content: "\2636";
   margin-right: 10px;
@@ -182,3 +181,28 @@ body {
 .app-form {width: 100%;}
 
 .app-form-div{display: flex;}
+
+.highlighted-column {
+  background-color: #c8f7c5 !important; /* Light green background for the selected column */
+}
+
+
+
+.drag-header {
+  cursor: move;
+  background-color: #f0f0f0;
+  position: absolute;
+  right: 0px;
+  top: 2px;
+  z-index: 10010;
+}
+
+.grid-element{
+  height: 100%;
+}
+
+.ag-header-cell-comp-wrapper{
+  height: 100%;
+    display: flex;
+    align-items: center;
+}

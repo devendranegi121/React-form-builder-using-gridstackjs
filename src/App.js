@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import store from "./store";
 import { Provider } from "react-redux";
 import './App.css'
-import GridComponent from "./components/GridStack/GridComponent";
 import DraggableFormElement from "./components/GridStack/DraggableFormElement";
 import MultiGridPage from "./components/GridStack/MultiGridPage";
 import TableDyanamic from "./components/TableDyanamic";
@@ -26,6 +25,7 @@ function App() {
   return (
     <Provider store={store}>
       <div className="App">
+        {/* <ExcelLikeGrid /> */}
         <div className="main-grid">
           <div className="left-menu">
             <strong>Form Elements</strong>
