@@ -5,24 +5,42 @@ import TextField from '../TextField';
 import TextArea from '../TextArea';
 import NestedGrid from './NestedGrid';
 import TableDyanamic from '../TableDyanamic';
-import EiditElements from './EiditElements';
+import EiditElementsCell from './EiditElementsCell';
 import { createPortal } from 'react-dom';
 import EditCommonelement from './EditCommonelement';
 import CustomHeaderComponent from './CustomHeaderComponent ';
+import EiditElementsTable from './EiditElementsTable';
+import { useDispatch } from 'react-redux';
 
 const GridComponentRender = () => {
   const gridRef = useRef(null);
   const [grid, setGrid] = useState(null);
   const [selectedElement, setSelectedElement] = useState(null);
   const [widgetsMap, setWidgetsMap] = useState([]);
+  const [selectedTable, setSelectedTable]= useState();
+  const [showTotalTable, setShowTotalTable]= useState(false);
+
+  const dispach= useDispatch();
 
   const [columnDefs, setColumnDefs] = useState([
-    // { headerName: 'Drag', rowDrag: true, lockPosition: true, width: 77, maxWidth: 77, resizable: false },
+    //  { headerName: 'Drag', rowDrag: true, lockPosition: true, width: 77, maxWidth: 77, resizable: false },
+     {
+      headerName: '', // Header for index column
+      valueGetter: (params) => params.node.rowIndex + 1, // Calculates the index
+      width: 50, // Optional: Adjust width as needed
+      minWidth :50, 
+      maxWidth :20, 
+      //suppressMovable: true, // Prevents moving the index column
+      headerComponent: CustomHeaderComponent,
+      lockPosition: true,
+  },
     { headerName: 'col1', field: 'col1',  lockPosition: true, valueFormatter: params => params.value.value , 
        headerComponent: CustomHeaderComponent,
-       headerComponentParams: {}
+       headerComponentParams: {},
+       index:1
       },
     { headerName: 'col2', field: 'col2',  lockPosition: true, valueFormatter: params => params.value.value, 
+      index:2,
       headerComponent: CustomHeaderComponent },
   ]);
 
@@ -30,9 +48,43 @@ const GridComponentRender = () => {
     headerComponent: CustomHeaderComponent }
 
   const [rowData, setRowData] = useState([
-    { col1: { value: 1, formula: '' }, col2: { value: 2, formula: '' }, col3: { value: 0, formula: '' } },
-    { col1: { value: 2, formula: '' }, col2: { value: 5, formula: '' }, col3: { value: 0, formula: '' } },
+    { col1: { value: 10, formula: '' }, col2: { value: 2, formula: '' }, col3: { value: 0, formula: '' } },
+    { col1: { value: 20, formula: '' }, col2: { value: 5, formula: '' }, col3: { value: 0, formula: '' } },
   ]);
+
+  
+  // Handle the form submission to generate rows and columns
+  const handleSubmit = ( propertys) => {
+    console.log("propertys", propertys)
+    const {rows, columns}= propertys
+    console.log(rows, '---------->', propertys)
+    //e.preventDefault();
+
+
+    // Extend existing columns or create new ones
+    const updatedColumns = Array.from({ length: columns }, (_, i) => {
+      const colId = `col${i + 1}`;
+      return {
+        headerName: `col${i + 1}`,
+        field: colId,
+        editable: true,
+      };
+    });
+    
+    // Update existing rows or add new rows if needed
+    const updatedRows = Array.from({ length: rows }, (_, rowIndex) => {
+      const existingRow = rowData[rowIndex] || {}; // Keep the existing row data, or create a new one
+      const newRow = {};
+      for (let i = 0; i < columns; i++) {
+        const colId = `col${i + 1}`;
+        newRow[colId] = existingRow[colId] || { value: 0, formula: '' }; // Keep existing data or initialize with an empty string
+      }
+      return newRow;
+    });
+     // Update state with the new column definitions and row data
+    setColumnDefs([columnDefs[0], ...updatedColumns]);
+    setRowData(updatedRows);
+  };
 
   const [selectedCell, setSelectedCell] = useState(); // Default formula
 
@@ -118,6 +170,7 @@ const GridComponentRender = () => {
   
   const onSelectElement = (elementId, data) => {
     const selected = widgetsMap.find((w) => w.id === elementId);
+    setSelectedTable("")
     setSelectedElement(selected);
     setSelectedCell(null)
   };
@@ -125,6 +178,7 @@ const GridComponentRender = () => {
   const onSelectCell = (elementId, data) => {
     const selected = widgetsMap.find((w) => w.id === elementId);
     selected.rowIndex = 1;
+    setSelectedTable("")
     data ? setSelectedCell(data) : setSelectedCell(null);
 
     setSelectedElement(null)
@@ -182,7 +236,14 @@ const GridComponentRender = () => {
   };
 
   console.log("columnDefs", columnDefs);
-  
+
+  const setSelectedTableHander=(status)=>{
+     setSelectedElement(null);
+    setSelectedCell(null)
+    setSelectedTable(status)
+  }
+
+   
   return (
     <div className='app-form-div'>
       <div className='app-form'>
@@ -211,6 +272,8 @@ const GridComponentRender = () => {
                       setSelectedCell={setSelectedCell}
                       selectedCell={selectedCell}
                       newColumn={newColumn}
+                      setSelectedTable={setSelectedTableHander}
+                      showTotalTable={showTotalTable}
                     />
                   )}
                   {type === 'NestedGrid' && (
@@ -227,8 +290,8 @@ const GridComponentRender = () => {
       </div>
 
       <div className="edit-app">
-        {selectedCell && (
-          <EiditElements
+        {(selectedCell ) && (
+          <EiditElementsCell
             selectedElement={selectedElement}
             onUpdate={handleUpdate}
             columnDefs={columnDefs}
@@ -237,7 +300,27 @@ const GridComponentRender = () => {
             setRowData={setRowData}
             handleFormulaChange={handleFormulaChange}
             selectedCell={selectedCell}
+            selectedTable={selectedTable}
             widgetsMap={widgetsMap}
+            handleSubmit={handleSubmit}
+          />
+        )}
+
+{(selectedTable) && (
+          <EiditElementsTable
+            selectedElement={selectedElement}
+            onUpdate={handleUpdate}
+            columnDefs={columnDefs}
+            setColumnDefs={setColumnDefs}
+            rowData={rowData}
+            setRowData={setRowData}
+            handleFormulaChange={handleFormulaChange}
+            selectedCell={selectedCell}
+            selectedTable={selectedTable}
+            widgetsMap={widgetsMap}
+            handleSubmit={handleSubmit}
+            setShowTotalTable={setShowTotalTable}
+            showTotalTable={showTotalTable}
           />
         )}
 

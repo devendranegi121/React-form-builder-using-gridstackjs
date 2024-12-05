@@ -30,13 +30,9 @@ console.log("selectedElement", selectedElement)
     const updatedElement = {
       ...selectedElement,
       data: { ...element, properties: udpatedProperties}
-    };
-    console.log("updatedElement", updatedElement)
+    }; 
     onUpdate(updatedElement);
-  };
-   console.log("propertiesList", propertiesList)
-   console.log("properties", properties)
-   console.log("propertiesList[element.type]", propertiesList[element.type])
+  }; 
   return (
     <div className='app-edit-element'>
       <p className='app-title'>Edit Properties</p>

@@ -2,10 +2,8 @@ import React, { useState } from "react";
 import store from "./store";
 import { Provider } from "react-redux";
 import './App.css'
-import DraggableFormElement from "./components/GridStack/DraggableFormElement";
-import MultiGridPage from "./components/GridStack/MultiGridPage";
-import TableDyanamic from "./components/TableDyanamic";
 import GridComponentRender from "./components/GridStack/GridComponentRender";
+import DraggableFormElement from "./components/GridStack/DraggableFormElement";
 
 const initialElements = [
   { id: '1', type: 'TextField', label: 'Text Field', properties: {showLabel:true} },
@@ -14,13 +12,7 @@ const initialElements = [
   { id: '4', type: 'TableDyanamic', label: 'Text Area', properties: {showLabel:true} },
 ];
 
-function App() {
-
-  const [showTable, setShowTable] = useState();
-
-  const addTable = (status) => {
-    setShowTable(status)
-  }
+function App() {  
 
   return (
     <Provider store={store}>
@@ -36,18 +28,12 @@ function App() {
           </div>
 
           <div className="app-drop-box">
-            <button onClick={() => addTable(true)}>Show table</button>
+            {/* <button onClick={() => addTable(true)}>Show table</button> */}
             {/* <GridComponent /> */}
             <GridComponentRender  />
-            {showTable && <TableDyanamic setShowTable={setShowTable} />}
-
-            <MultiGridPage initialElements={initialElements} />
           </div>
-
-          
         </div>
       </div>
-
     </Provider>
   );
 }

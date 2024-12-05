@@ -206,3 +206,30 @@ body {
     display: flex;
     align-items: center;
 }
+
+
+.colId{
+  top: -2px;
+  position: absolute;
+  display: flex;
+    width: 100%;
+    background: #ccc;
+    left: 0px;
+    justify-content: center;
+}
+
+ .ag-column-first{
+  background-color: #ccc;
+  padding: 0px !important;
+  text-align: center;
+ }
+
+ .ag-header-cell-comp-wrapper{
+  padding-top: 10px;
+ }
+
+ .header-title{
+  width: 100%;
+ }
+
+ 

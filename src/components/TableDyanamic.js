@@ -2,10 +2,10 @@ import React, { useState, useCallback, useRef } from 'react';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/styles/ag-grid.css';
 import 'ag-grid-community/styles/ag-theme-alpine.css';
+import CustomTable from './HtmlTable/CustomTable';
 
-const TableDynamic = ({onElementClick, element, formula ,selectedCell,
-  columnDefs, setColumnDefs, rowData, setRowData, newColumn}) => {
-
+const TableDynamic = (props) => {
+const {onElementClick, element, formula ,selectedCell,  columnDefs, setColumnDefs, rowData, setRowData, showTotalTable, setSelectedTable}= props
 
   const gridRef = useRef(null);
 
@@ -35,7 +35,11 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
   const calculateFormula = (row) => {
     try {
       // Replace col1, col2, etc. with their values
-      const expression = formula.replace(/col(\d+)/g, (match, p1) => row[`col${p1}`]?.value || 0);
+      let rowvalue=(p1)=> row[`col${p1}`]?.value
+      if( typeof rowvalue==="string"){
+        rowvalue= parseInt(rowvalue)
+      }
+      const expression = formula.replace(/col(\d+)/g, (match, p1) => rowvalue(p1) || 0);
       // Safely evaluate the expression
       const formulaFunc = new Function('return ' + expression);
       return formulaFunc();
@@ -47,30 +51,7 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
 
  
 
-  // Function to add a new row
-  const addRow = useCallback(() => {
-    const newRow = {};
-    columnDefs.forEach(colDef => {
-      if (colDef.field) {
-        newRow[colDef.field] =   { value: '', formula: '' };
-      }
-    });
-    setRowData([...rowData, newRow]);
-  }, [columnDefs, rowData, formula]);
-
-  // Function to add a new column 
-  const addColumn = () => {
-    const newColField = `col${columnDefs.length+1}`;
-    const newCol = {...newColumn, headerName: `Column ${columnDefs.length + 1}`, field: newColField, };
-    setColumnDefs([...columnDefs, newCol]);
-
-    // Add new field to all existing rows
-    setRowData(rowData.map(row => ({
-      ...row,
-      [newColField]: { value: 0, formula: '' }
-    })));
-  } ;
-
+  
   // Save the grid state to localStorage
   const saveGridState = useCallback(() => {
     if (gridRef.current) {
@@ -92,16 +73,16 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
     }
   }, []);
 
-  // Function to get all grid data
-  const getAllGridData = useCallback(() => {
-    if (gridRef.current) {
-      const rowData = [];
-      gridRef.current.forEachNode((node) => {
-        rowData.push(node.data);
-      });
-      console.log("rowData", rowData)
-    }
-  }, []);
+  // // Function to get all grid data
+  // const getAllGridData = useCallback(() => {
+  //   if (gridRef.current) {
+  //     const rowData = [];
+  //     gridRef.current.forEachNode((node) => {
+  //       rowData.push(node.data);
+  //     });
+  //     console.log("rowData", rowData)
+  //   }
+  // }, []);
 
    // Optionally, you can use this function to style the selected row
    const getRowStyle = (params) => {
@@ -120,7 +101,8 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
 
   
   // Function to handle cell clicks
-  const onCellClicked = (params) => { 
+  const onCellClicked = (params, e) => { 
+    const colIndex = params.api.getAllDisplayedColumns().indexOf(params.column); // Get the column index
     const selectedRowIndex = params.node.rowIndex; // Row index of the clicked cell
     const selectedColId = params.column.colId;     // Column ID of the clicked cell
     const selectedData = params.data[selectedColId]; // Data of the clicked cell
@@ -129,20 +111,41 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
     onElementClick(element.id, {
       rowIndex: selectedRowIndex,
       colId: selectedColId,
-      cellData: selectedData
+      cellData: selectedData,
+      colIndex: colIndex,
     });
 
   };
 
+  console.log("pppppppppp", rowData)
+
   return (
     <>
         {/* <div className='drag-header'>Drag</div> */}
-      <div>
+      {/* <div>
         
         <button onClick={getAllGridData}>Get All Grid Data</button>
-      </div>
+      </div> */}
       {/* <button className='right-top' onClick={()=>onElementClick(element.id)}>Edit</button> */}
-      <div className="ag-theme-alpine" style={{ height: 300, width: "100%" }}>
+      <button className='left-top' onClick={()=>setSelectedTable(element.id)}>Edit</button>
+      <div className="ag-theme-alpine" style={{ height: 300, width: "100%" }} 
+          tabIndex={0}
+          
+      >
+
+        <CustomTable showTotalTable= {showTotalTable} rowData={
+            rowData.map(row => {
+              let rowDataMapped = {};
+              columnDefs.forEach(colDef => {
+                const fieldName = colDef.field; // Get the column field name dynamically
+                if (row[fieldName]) {
+                  rowDataMapped[fieldName] = row[fieldName].value; // Dynamically map the values
+                }
+              });
+              return rowDataMapped;
+            })} columnDefs={columnDefs} />
+
+
         <AgGridReact
           columnDefs={columnDefs}
           rowData={
@@ -164,17 +167,17 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
             sortable: false,
             suppressMovable: false,
             cellClassRules: cellClassRules,
-            headerComponentParams: {
-              template:
-                '<div class="ag-header-cell" role="presentation">' +
-                '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
-                '    <span ref="eText" class="ag-header-cell-text">ds</span>' +
-                '  </div>' +
-                '</div>',
-              onClick: (event) => {
-                console.log('Header cell clicked', event);
-              },
-            }
+            // headerComponentParams: {
+            //   template:
+            //     '<div class="ag-header-cell" role="presentation">' +
+            //     '  <div ref="eLabel" class="ag-header-cell-label" role="presentation">' +
+            //     '    <span ref="eText" class="ag-header-cell-text">ds</span>' +
+            //     '  </div>' +
+            //     '</div>',
+            //   onClick: (event) => {
+            //     console.log('Header cell clicked', event);
+            //   },
+            // }
           }}
           rowDragManaged={true}
           animateRows={true}
@@ -187,13 +190,12 @@ const TableDynamic = ({onElementClick, element, formula ,selectedCell,
         />
 
  
-
+            {showTotalTable && <p>show showTotalTable</p>}
       </div>
-      <div className="action-btn">
-        <button onClick={addRow}>Add Row</button>
-        <button onClick={addColumn}>Add Column</button>
+      {/* <div className="action-btn">
+        
         <button onClick={saveGridState}>Save Grid State</button>
-      </div>
+      </div> */}
     </>
   );
 };
