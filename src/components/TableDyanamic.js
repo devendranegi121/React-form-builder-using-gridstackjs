@@ -133,7 +133,7 @@ const {onElementClick, element, formula ,selectedCell,  columnDefs, setColumnDef
           
       >
 
-        <CustomTable showTotalTable= {showTotalTable} rowData={
+        {/* <CustomTable showTotalTable= {showTotalTable} rowData={
             rowData.map(row => {
               let rowDataMapped = {};
               columnDefs.forEach(colDef => {
@@ -143,7 +143,7 @@ const {onElementClick, element, formula ,selectedCell,  columnDefs, setColumnDef
                 }
               });
               return rowDataMapped;
-            })} columnDefs={columnDefs} />
+            })} columnDefs={columnDefs} /> */}
 
 
         <AgGridReact
